@@ -9,7 +9,7 @@ state:
   - 180
   bond_dev_tol: 0.25
   checkpoint: null
-  checkpoint_epoch: -1
+  checkpoint_epoch: -1  # 加载最新的检查点
   cpu: false
   diameter_viz: 0.08
   diffusion_loss_weight: 0
@@ -19,37 +19,37 @@ state:
   distributed_port: 13356
   dr: 0.02
   dv: 0.1
-  energy_force_loss_weight: 10
+  energy_force_loss_weight: 10  # 微调阶段，能量和力的损失权重放大到 10
   eq_steps: 0
-  eval_model: pre
+  eval_model: pre  # 表示基于“pre”（预训练）模型进行评估和微调
   exp_name: TEST_correctedlogging
   gaussian_width: 0.01
   gradient_clipping: true
   ic_stddev: 0.0
   identifier: ''
-  integrator: NoseHoover
+  integrator: NoseHoover  # 热浴算法--模拟 MD 时使用的温控算法
   integrator_config:
     gamma: 0.1
-    temperature: 500.0
-    timestep: 0.5
+    temperature: 500.0  # 模拟温度，设置为 500K（比较热），目的是让分子运动剧烈，更容易暴露出模型的不稳定性
+    timestep: 0.5  # 时间步长 0.5 飞秒（fs）
     ttime: 20.0
   is_debug: false
   l_max: 3
   local_rank: 0
   log_dir: /global/cfs/projectdirs/m4319/sanjeevr
   lr: 0.001
-  max_frac_unstable_threshold: 0.75
+  max_frac_unstable_threshold: 0.75  # 不稳定性阈值，如果 75% 的模拟轨迹都崩溃，就停止模拟开始学习
   max_rdf_dist: 10
   max_times_reduce_lr: 2
   min_frac_unstable_threshold: 0.0
   minibatch_size: 40
   mode: train
   model: schnet
-  model_dir: /pscratch/sd/s/sanjeevr/MODELPATH
+  model_dir: /pscratch/sd/s/sanjeevr/MODELPATH  # 模型加载目录
   molecule: aspirin
   n_dump: 50
   n_dump_vacf: 2
-  n_epochs: 500
+  n_epochs: 500  # 微调的总轮数
   n_replicas: 128
   name: md17
   noddp: false
@@ -61,13 +61,13 @@ state:
   rdf_loss_weight: 1
   rdf_peak: 1.0
   reset_probability: 0.05
-  results_dir: /global/cfs/projectdirs/m4319/sanjeevr/results_md17_correctedlogging
+  results_dir: /global/cfs/projectdirs/m4319/sanjeevr/results_md17_correctedlogging  # 结果输出目录
   run_dir: MODELPATH/
   seed: 0
   shuffle: true
-  size: 1k
+  size: 1k  # 
   src: /pscratch/sd/s/sanjeevr/
-  steps: 2000
+  steps: 2000  # 每一轮 Epoch 中，MD 模拟跑 2000 步
   submit: false
   summit: false
   timestamp_id: null
