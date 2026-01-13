@@ -13,7 +13,7 @@ dataset:
   size: 1k  # 使用的数据集样本量大小为 1000 个结构
   src: post_data/md17/aspirin/1k/train  # 训练数据在服务器上的路径
   target_mean: -17637.827343506295  # 能量的统计平均值。由于原子能量数值极大，训练前需减去此均值
-  target_std: 1.0  # 能量的标准差  Z=(样本值-平均值)/标准差   标准差设置为1，∴数据分布中心化
+  target_std: 1.0  # 能量的标准差  Z=(样本值-平均值)/标准差   标准差设置为1，可能波动范围并不大因此没有进行缩小 ∴数据分布中心化
 - src: post_data/md17/aspirin/1k/val
 distributed: false  # 是否开启多显卡分布式训练
 distributed_backend: nccl  # 多卡通信使用的后端驱动（NVIDIA 显卡常用 nccl）
