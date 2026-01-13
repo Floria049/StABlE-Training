@@ -10,14 +10,14 @@ from torch.nn.init import xavier_uniform_, constant_
 
 zeros_initializer = partial(constant_, val=0.0)
 
-
+# 高斯模糊（处理原子距离）
 def gaussian_smearing(distances, offset, widths, centered=False):
 
     if not centered:
         # Compute width of Gaussians (using an overlap of 1 STDDEV)
         # widths = offset[1] - offset[0]
-        coeff = -0.5 / torch.pow(widths, 2)
-        diff = distances - offset
+        coeff = -0.5 / torch.pow(widths, 2)  # 计算高斯函数的衰减系数
+        diff = distances - offset  # 计算原子间实际距离与预设“刻度”的偏差
 
     else:
         # If Gaussians are centered, use offsets to compute widths
@@ -26,7 +26,7 @@ def gaussian_smearing(distances, offset, widths, centered=False):
         diff = distances
 
     # Compute and return Gaussians
-    gauss = torch.exp(coeff * torch.pow(diff, 2))
+    gauss = torch.exp(coeff * torch.pow(diff, 2))  # 核心公式，它把一个距离数值，映射成一组 0 到 1 之间的概率分布
 
     return gauss
 
@@ -85,7 +85,7 @@ class GaussianSmearing(nn.Module):
 
         return result
 
-
+# 神经网络的“神经元”
 class Dense(nn.Linear):
     """Applies a dense layer with activation: :math:`y = activation(Wx + b)`
 
@@ -108,9 +108,9 @@ class Dense(nn.Linear):
         bias_init=zeros_initializer,
     ):
 
-        self.weight_init = weight_init
-        self.bias_init = bias_init
-        self.activation = activation
+        self.weight_init = weight_init  # 初始化。在训练开始前，随机给神经网络里的成千上万个参数分发初始数字（比如使用 Xavier 分布）
+        self.bias_init = bias_init  # 从 PyTorch 框架中继承基础的线性层（即矩阵乘法 y = Wx + b）
+        self.activation = activation  # 定义“激活函数”。它负责给数学函数加入非线性特征
 
         super().__init__(in_features, out_features, bias)
 
