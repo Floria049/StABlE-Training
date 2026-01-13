@@ -5,19 +5,19 @@ cpu: false  # 不使用 CPU，强制使用 GPU
 
 # 数据集设置
 dataset:
-- grad_target_mean: 0.0
-  grad_target_std: 1.0  # 力的（梯度）归一化参数，均值为 0，方差为 1，帮助模型收敛
+- grad_target_mean: 0.0  # grad target--能量梯度--力 力的预测目标的平均值（平衡平均受力为0）
+  grad_target_std: 1.0  # 力的（梯度）归一化参数，均值为 0，方差为 1，帮助模型收敛  均值=0，标准差=1，∴力保持原始数值
   molecule: aspirin  # 训练的分子对象
-  name: md17-aspirin
-  normalize_labels: true
-  size: 1k
-  src: post_data/md17/aspirin/1k/train  # 数据源路径。这是预训练时读取原始 MD17 数据集的位置
-  target_mean: -17637.827343506295
-  target_std: 1.0  # 能量（Target）的归一化参数。能量数值通常很大，需要减去均值除以方差来“缩小”数值范围
+  name: md17-aspirin  # 任务名称，通常用于生成日志文件夹
+  normalize_labels: true  # 是否对标签（能量/力）进行归一化（平均）处理，有助于模型更快收敛
+  size: 1k  # 使用的数据集样本量大小为 1000 个结构
+  src: post_data/md17/aspirin/1k/train  # 训练数据在服务器上的路径
+  target_mean: -17637.827343506295  # 能量的统计平均值。由于原子能量数值极大，训练前需减去此均值
+  target_std: 1.0  # 能量的标准差  Z=(样本值-平均值)/标准差   标准差设置为1，∴数据分布中心化
 - src: post_data/md17/aspirin/1k/val
-distributed: false  # 每次训练实时计算邻居列表
-distributed_backend: nccl
-distributed_port: 13356
+distributed: false  # 是否开启多显卡分布式训练
+distributed_backend: nccl  # 多卡通信使用的后端驱动（NVIDIA 显卡常用 nccl）
+distributed_port: 13356  # 多卡通信使用的端口号
 identifier: ''
 is_debug: false
 local_rank: 0
