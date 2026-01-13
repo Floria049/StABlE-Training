@@ -1,18 +1,21 @@
-amp: false
-checkpoint: null
-cpu: false
+# 基础硬件设置
+amp: false  # 混合精度训练，32 位浮点数，精度更高但显存占用更大
+checkpoint: null  # 从头训练，不加载之前的断点
+cpu: false  # 不使用 CPU，强制使用 GPU
+
+# 数据集设置
 dataset:
 - grad_target_mean: 0.0
-  grad_target_std: 1.0
-  molecule: aspirin
+  grad_target_std: 1.0  # 力的（梯度）归一化参数，均值为 0，方差为 1，帮助模型收敛
+  molecule: aspirin  # 训练的分子对象
   name: md17-aspirin
   normalize_labels: true
   size: 1k
-  src: post_data/md17/aspirin/1k/train
+  src: post_data/md17/aspirin/1k/train  # 数据源路径。这是预训练时读取原始 MD17 数据集的位置
   target_mean: -17637.827343506295
-  target_std: 1.0
+  target_std: 1.0  # 能量（Target）的归一化参数。能量数值通常很大，需要减去均值除以方差来“缩小”数值范围
 - src: post_data/md17/aspirin/1k/val
-distributed: false
+distributed: false  # 每次训练实时计算邻居列表
 distributed_backend: nccl
 distributed_port: 13356
 identifier: ''
@@ -22,33 +25,37 @@ logger:
   name: wandb
   project: mdbench
 mode: train
+
+# 模型架构
 model:
-  cutoff: 5.0
-  hidden_channels: 64
-  name: schnet
+  cutoff: 5.0  # 截断半径
+  hidden_channels: 64  # 隐藏层通道数，通道数↑，信息储存量↑ ————神经网络宽度（广度）
+  name: schnet   # 模型架构名称
   num_filters: 64
   num_gaussians: 25
-  num_interactions: 6
+  num_interactions: 6  # 交互层数————神经网络深度
   otf_graph: true
   use_pbc: false
 noddp: false
+
+# 优化器
 optim:
-  batch_size: 100
+  batch_size: 100  # 一次训练读取 100 个分子结构
   checkpoint_every: 10
   early_stopping_lr: 1.0e-06
   early_stopping_time: 604800
-  energy_coefficient: 0.05
+  energy_coefficient: 0.05   # loss(QM)中能量的权重
   eval_batch_size: 100
   factor: 0.8
-  force_coefficient: 0.95
+  force_coefficient: 0.95  # # loss(QM)中力的权重
   lr_gamma: 0.1
-  lr_initial: 0.001
-  max_epochs: 10000
+  lr_initial: 0.001  # 初始学习率
+  max_epochs: 10000  # 最多跑 1 万轮
   min_lr: 1.0e-06
   num_workers: 8
   optimizer: Adam
   patience: 5
-  scheduler: ReduceLROnPlateau
+  scheduler: ReduceLROnPlateau  # Loss不下降，自动降低学习率
   warmup_factor: 0.2
   warmup_steps: 5000
 print_every: 200
