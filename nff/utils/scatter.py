@@ -3,10 +3,10 @@ Adapted from https://github.com/learningmatter-mit/NeuralForceField/blob/master/
 """
 
 from itertools import repeat
-from torch.autograd import grad
+from torch.autograd import grad  # 引入 PyTorch 的自动求导工具
 import torch
 
-
+# 计算力
 def compute_grad(
     inputs,
     output,
@@ -34,8 +34,8 @@ def compute_grad(
         grad_outputs = output.data.new(output.shape).fill_(1)
     try:
         (gradspred,) = grad(
-            output,
-            inputs,
+            output,  # 模型算出的能量
+            inputs,  # 原子的坐标
             grad_outputs=grad_outputs,
             create_graph=create_graph,
             retain_graph=retain_graph,
@@ -43,17 +43,17 @@ def compute_grad(
         )
     except:
         gradspred = grad(
-            output,
-            inputs,
+            output,  
+            inputs,  
             grad_outputs=grad_outputs,
             create_graph=create_graph,
             retain_graph=retain_graph,
             allow_unused=allow_unused,
         )
 
-    return gradspred
+    return gradspred  # 返回原子受力结果
 
-
+# 数据翻译
 def gen(src, index, dim=-1, out=None, dim_size=None, fill_value=0):
     dim = range(src.dim())[dim]  # Get real dim value.
 
@@ -72,7 +72,7 @@ def gen(src, index, dim=-1, out=None, dim_size=None, fill_value=0):
 
     return src, out, index, dim
 
-
+# 计算总能量
 def scatter_add(src, index, dim=-1, out=None, dim_size=None, fill_value=0):
     src, out, index, dim = gen(src, index, dim, out, dim_size, fill_value)
     return out.scatter_add_(dim, index, src)
