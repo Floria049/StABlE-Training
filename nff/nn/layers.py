@@ -8,9 +8,9 @@ from torch.nn import Parameter
 from torch.nn.init import xavier_uniform_, constant_
 
 
-zeros_initializer = partial(constant_, val=0.0)
+zeros_initializer = partial(constant_, val=0.0)  # 神经网络开始学习前，默认将某些参数（如偏置项 $b$）设为 0
 
-# 高斯模糊（处理原子距离）
+# 高斯模糊（处理原子距离）--将距离变为信号
 def gaussian_smearing(distances, offset, widths, centered=False):
 
     if not centered:
@@ -30,7 +30,7 @@ def gaussian_smearing(distances, offset, widths, centered=False):
 
     return gauss
 
-
+# 对上述函数的封装，使其成为神经网络的一个标准层
 class GaussianSmearing(nn.Module):
     """
     Wrapper class of gaussian_smearing function. Places a predefined number of Gaussian functions within the
