@@ -1,16 +1,16 @@
-# 本文件用于模型训练完成后的评估，只进行模拟，不更新参数
+# 本文件用于模型训练完成后的评估
 includes:
 - configs/stable_training/md17/train.yml
-train: False
+train: False  # 只进行模拟，不更新参数
 bond_dev_tol: 0.5
 max_frac_unstable_threshold: 0.99
 integrator: Langevin
 results_dir: paper_stable_training_results
-eval_model: post
-temperature: 500.
-steps: 2000 # 1 picosecond per epoch
-timestep: 0.5
-n_replicas: 256
-n_dump: 2000  # 副本数
+eval_model: post  # post--使用StABlE训练
+temperature: 500.  # 规定模拟稳定为500K
+steps: 2000  # 1 picosecond per epoch（每一轮总时长为1ps)
+timestep: 0.5  # 由总时长1ps和2000步可知步长为0.5fs 
+n_replicas: 256  # 副本数
+n_dump: 2000  # 每隔2000步记录一次数据（得到256个独立样本）
 n_epochs: 1000 #corresponding to 1 ns（模拟总时长）
 
