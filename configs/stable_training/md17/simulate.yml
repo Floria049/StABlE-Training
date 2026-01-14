@@ -1,3 +1,4 @@
+# 本文件用于模型训练完成后的评估，只进行模拟，不更新参数
 includes:
 - configs/stable_training/md17/train.yml
 train: False
@@ -10,6 +11,6 @@ temperature: 500.
 steps: 2000 # 1 picosecond per epoch
 timestep: 0.5
 n_replicas: 256
-n_dump: 2000
-n_epochs: 1000 #corresponding to 1 ns
+n_dump: 2000  # 副本数
+n_epochs: 1000 #corresponding to 1 ns（模拟总时长）
 
