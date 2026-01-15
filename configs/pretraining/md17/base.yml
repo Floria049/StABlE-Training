@@ -3,26 +3,26 @@ trainer: trainer
 name: md17
 
 dataset:
-  src: DATAPATH/md17
+  src: DATAPATH/md17   # 数据根目录
   name: md17
-  size: 10k
+  size: 10k   # 默认数据大小（命令行 --size 1k  会覆盖这个值）
   molecule: aspirin
-  normalize_labels: False
+  normalize_labels: False  # 是否对标签（能量/力）进行归一化。这里设为 False，表示直接预测真实数值。
 
 logger: 
   name: wandb
   project: mdbench
 
 task:
-  dataset: lmdb
+  dataset: lmdb  # 数据加载格式使用 LMDB（一种高性能键值对数据库）
   description: "Regressing to energies and forces"
-  type: regression
+  type: regression  # 任务类型：回归（预测连续数值，而非分类）
   metric: mae
   labels:
-    - potential energy
+    - potential energy  # 核心预测目标：势能
   grad_input: atomic forces
-  train_on_free_atoms: True
-  eval_on_free_atoms: True
+  train_on_free_atoms: True  # 在自由原子上训练（通常涉及原子参考能量）
+  eval_on_free_atoms: True  # 是否在自由原子上评估
 
 optim:
   early_stopping_time: 604800
