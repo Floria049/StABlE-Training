@@ -1,30 +1,33 @@
 includes:
 - configs/pretraining/md17/base.yml   # 基础环境与参数由base.yml定义
 
-# 本文件定义-模型架构参数--决定模型性能与计算量
+# 模型架构参数--决定模型性能与计算量
 model:
-  name: schnet
-  hidden_channels: 64
+  name: schnet  # 神经网络类别
+  hidden_channels: 64  # 隐藏层特征维度。越大模型越“宽”，表达能力越强，但计算更慢。
   num_filters: 64
-  num_interactions: 6
+  num_interactions: 6  # 交互模块的层数（深度）--代表一个原子可以“感知”到距离它 6 跳（Hop）范围内的邻居信息
   num_gaussians: 25
-  cutoff: 5.0
+  cutoff: 5.0  # 截断半径
   use_pbc: False
   otf_graph: True
 
+# 模型优化策略--规定模型如何学习
 optim:
-  batch_size: 100
-  eval_batch_size: 100
+  batch_size: 100  # 批大小，一次学100个分子构型，每学100个分子构型更新一次模型参数
+  eval_batch_size: 100  # 验证时的批大小
   num_workers: 0
-  lr_initial: 0.001
-  lr_gamma: 0.1
-  optimizer: Adam
-  warmup_steps: 5000
-  warmup_factor: 0.2
-  max_epochs: 10000
+  lr_initial: 0.001   # 初始学习率
+  lr_gamma: 0.1  # 学习率衰减系数
+  optimizer: Adam  # 优化器类型
+  warmup_steps: 5000  # 热身步数。前 5000 步学习率从 0 慢慢升到 0.001，防止一开始梯度爆炸。
+  warmup_factor: 0.2  # 热身起始因子
+  max_epochs: 10000  # 最大训练轮数--若loss足够小模型足够收敛则可能提前停止
+  # 损失函数权重--力的权重远大于能量
   energy_coefficient: 0.05
   force_coefficient: 0.95
-  scheduler: ReduceLROnPlateau
-  patience: 5
-  factor: 0.8
-  min_lr: 0.000001
+  # 学习率调度器
+  scheduler: ReduceLROnPlateau  # 验证集能量不再提升则减小学习率
+  patience: 5  # 耐心为5--若5轮学习性能未提升
+  factor: 0.8  # 则将学习率×0.8
+  min_lr: 0.000001  # 最低学习率
