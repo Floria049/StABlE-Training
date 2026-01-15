@@ -1,6 +1,7 @@
 includes:
-- configs/pretraining/md17/base.yml
+- configs/pretraining/md17/base.yml   # 基础环境与参数由base.yml定义
 
+# 本文件定义-模型架构参数--决定模型性能与计算量
 model:
   name: schnet
   hidden_channels: 64
