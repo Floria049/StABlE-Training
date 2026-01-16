@@ -24,24 +24,26 @@ from mdsim.common.flags import flags
 from boltzmann_estimator import BoltzmannEstimator
 from simulator import Simulator
 
+# 定义不同数据集的最大样本量
 MAX_SIZES = {"md17": "10k", "md22": "100percent", "water": "10k"}
 
+# 日志
 if __name__ == "__main__":
     logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARNING"))
     setup_logging()
-    parser = flags.get_parser()
-    args, override_args = parser.parse_known_args()
+    parser = flags.get_parser()  # 获取命令行参数解析器
+    args, override_args = parser.parse_known_args()  # 解析用户输入的参数 (如 --config-yml)
 
     config = build_config(args, override_args)
     params = types.SimpleNamespace(**config)
 
     params.results_dir = os.path.join(params.log_dir, params.results_dir)
 
-    # Set random seeds
+    # Set random seeds（随机种子）--锁定随机数生成器，确保每次运行结果可复现
     np.random.seed(seed=params.seed)
     torch.manual_seed(params.seed)
     random.seed(params.seed)
-    # GPU
+    # GPU--设备选择
     try:
         device = torch.device(torch.cuda.current_device())
     except:
@@ -71,6 +73,7 @@ if __name__ == "__main__":
     )
     os.makedirs(results_dir, exist_ok=True)
 
+    # 加载模型
     ######## Load appropriate model checkpoint ##############
 
     print(f"Loading pretrained {model_type} model")
